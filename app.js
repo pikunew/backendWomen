@@ -7,10 +7,7 @@ require("dotenv").config();
 var cors = require('cors');
 
 
-app.use(cors({
-    origin: 'https://womenhelpline.in', // Replace with your frontend URL
-    credentials: true,
-}))
+
 
 // import routes
 const authRoutes = require('./routes/authRoutes');
