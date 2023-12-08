@@ -1,4 +1,4 @@
-
+const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const ErrorResponse = require('../utils/errorResponse');
 
@@ -51,17 +51,19 @@ exports.signin = async (req, res, next) => {
     }
 }
 
-const sendTokenResponse = async (user, codeStatus, res) => {
-    const token = await user.getJwtToken();
+
+const sendTokenResponse = (user, codeStatus, res) => {
+    const token = user.getJwtToken();
+
     res
         .status(codeStatus)
         .cookie('token', token, { maxAge: 60 * 60 * 1000, httpOnly: true })
         .json({
             success: true,
-            role: user.role
-        })
-}
-
+            role: user.role,
+            token: token,
+        });
+};
 
 // log out
 exports.logout = (req, res, next) => {
