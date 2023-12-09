@@ -3,33 +3,29 @@ const app = express();
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
-require("dotenv").config();
-var cors = require('cors');
-app.use(cors());
-
-
-
-
-// import routes
-const authRoutes = require('./routes/authRoutes');
-const userRoutes = require('./routes/userRoutes');
-const issueTypeRoute = require('./routes/issuesTypeRoutes');
-const helplineRoute = require('./routes/helplineRoutes');
-
+const dotenv = require("dotenv");
+const cors = require('cors');
 const cookieParser = require("cookie-parser");
 const errorHandler = require("./middleware/error");
 
-//Database connection
+// Load environment variables from .env file
+dotenv.config();
+
+// Database connection
 mongoose.connect(process.env.DATABASE, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
     useFindAndModify: false
 })
-    .then(() => console.log("DB connected"))
-    .catch((err) => console.log("DB connection error:", err));
+.then(() => console.log("DB connected"))
+.catch((err) => console.log("DB connection error:", err));
 
-//MIDDLEWARE
+// MIDDLEWARE
+app.use(cors({
+    origin: 'https://womenhelpline.in', // Specify the allowed origin
+    credentials: true, // Include credentials (cookies, authorization headers) in the CORS requests
+}));
 app.use(morgan('dev'));
 app.use(bodyParser.json({ limit: "5mb" }));
 app.use(bodyParser.urlencoded({
@@ -37,23 +33,18 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(cookieParser());
-app.use(cors());
 
+// ROUTES MIDDLEWARE
+app.use('/api', require('./routes/authRoutes'));
+app.use('/api', require('./routes/userRoutes'));
+app.use('/api', require('./routes/issuesTypeRoutes'));
+app.use('/api', require('./routes/helplineRoutes'));
 
-//ROUTES MIDDLEWARE
-// app.get('/', (req, res) => {
-//     res.send("Hello from Node Js");
-// })
-app.use('/api', authRoutes);
-app.use('/api', userRoutes);
-app.use('/api', issueTypeRoute);
-app.use('/api', helplineRoute);
-
-// error middleware
+// Error middleware
 app.use(errorHandler);
 
-//port
-const port = process.env.PORT || 9000
+// Port
+const port = process.env.PORT || 9000;
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
