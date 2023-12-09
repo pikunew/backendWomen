@@ -6,7 +6,7 @@ const ErrorResponse = require('../utils/errorResponse');
 exports.createHelpline = async (req, res, next) => {
     try {
         const helpline = await Helpline.create({
-           
+            
             user: req.user.id,
             stt: req.body.stt,
             issue: req.body.issue,
@@ -101,7 +101,7 @@ exports.showHelplines = async (req, res, next) => {
 
 
       // Pagination
-      const pageSize = 9;
+      const pageSize = 15;
       const page = Number(req.query.pageNumber) || 1;
   
       const count = await Helpline.countDocuments(filter);
@@ -146,7 +146,6 @@ exports.showHelplines = async (req, res, next) => {
   };
 
   
-
 
 
 

@@ -68,4 +68,3 @@ exports.deleteIssueType = async (req, res, next) => {
 
 
 
-
